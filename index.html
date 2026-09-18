@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#06090f">
+<meta name="description" content="Cargas del Casino — Cajeros online. Recargas, retiros y soporte por WhatsApp.">
+<title>Cargas del Casino · Cajeros Online</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+
+<style>
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root{
+  --bg:#06090f;
+  --surface:rgba(255,255,255,.035);
+  --surface-hi:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.08);
+
+  --gold:#d4af37;
+  --gold-lt:#f7e08a;
+  --gold-dk:#8a6b18;
+
+  --wa:#25D366;
+  --wa-dk:#128C4A;
+
+  --text:#eef3fa;
+  --muted:#8994a8;
+  --dim:#5b657a;
+
+  --radius:20px;
+  --radius-sm:14px;
+  --radius-lg:26px;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --container:1200px;
+}
+
+/* ============================================================
+   2. RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:80px;
+  -webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  color:var(--text);
+  background:var(--bg);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+ul{list-style:none}
+
+h1,h2,h3,h4{
+  font-family:'Outfit',sans-serif;
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-.025em;
+  text-wrap:balance;
+}
+
+p{text-wrap:pretty}
+
+::selection{background:var(--gold);color:#05070c}
+
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#05070c}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(var(--gold-dk),var(--gold));
+  border-radius:10px;
+  border:2px solid #05070c;
+}
+
+/* ============================================================
+   3. LAYOUT
+   ============================================================ */
+.container{
+  width:100%;
+  max-width:var(--container);
+  margin-inline:auto;
+  padding-inline:clamp(18px,4vw,28px);
+}
+
+.section{padding:clamp(64px,9vw,110px) 0}
+
+.section-head{
+  max-width:640px;
+  margin:0 auto clamp(36px,5vw,56px);
+  text-align:center;
+}
+
+.section-head .eyebrow{
+  display:inline-block;
+  font-family:'Outfit',sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--gold);
+  background:rgba(212,175,55,.07);
+  border:1px solid rgba(212,175,55,.2);
+  padding:7px 15px;
+  border-radius:999px;
+  margin-bottom:20px;
+}
+
+.section-head h2{
+  font-size:clamp(1.7rem,4.4vw,2.6rem);
+  margin-bottom:14px;
+}
+
+.section-head p{
+  color:var(--muted);
+  font-size:clamp(.95rem,2vw,1.05rem);
+}
+
+.grad{
+  background:linear-gradient(100deg,var(--gold-lt) 0%,var(--gold) 50%,#a5811f 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+}
+
+/* ============================================================
+   4. BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-family:'Outfit',sans-serif;
+  font-weight:700;
+  font-size:.98rem;
+  padding:15px 30px;
+  border-radius:999px;
+  white-space:nowrap;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s,border-color .25s,color .25s;
+}
+.btn svg{width:18px;height:18px;flex-shrink:0}
+
+.btn-wa{
+  color:#04170c;
+  background:linear-gradient(135deg,#5ff09b,var(--wa) 45%,var(--wa-dk));
+  box-shadow:0 12px 30px -12px rgba(37,211,102,.85);
+}
+.btn-wa:hover{
+  transform:translateY(-2px);
+  box-shadow:0 20px 40px -14px rgba(37,211,102,1);
+}
+
+.btn-ghost{
+  color:var(--gold-lt);
+  border:1px solid rgba(212,175,55,.32);
+  background:rgba(212,175,55,.04);
+}
+.btn-ghost:hover{
+  transform:translateY(-2px);
+  background:rgba(212,175,55,.1);
+  border-color:rgba(212,175,55,.55);
+}
+
+/* ============================================================
+   5. NAV
+   ============================================================ */
+.nav{
+  position:fixed;
+  inset:0 0 auto 0;
+  z-index:100;
+  padding:16px 0;
+  transition:padding .3s var(--ease),background .3s,border-color .3s;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  padding:10px 0;
+  background:rgba(6,9,15,.9);
+  border-bottom-color:rgba(212,175,55,.12);
+}
+
+.nav-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.brand{
+  display:inline-flex;
+  align-items:center;
+  gap:11px;
+  font-family:'Outfit',sans-serif;
+  font-weight:900;
+  font-size:1.15rem;
+  letter-spacing:-.01em;
+  white-space:nowrap;
+}
+.brand-mark{
+  width:40px;height:40px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  background:linear-gradient(140deg,rgba(212,175,55,.28),rgba(212,175,55,.03));
+  border:1px solid rgba(212,175,55,.35);
+  font-size:1.05rem;
+  flex-shrink:0;
+}
+.brand-txt{display:flex;flex-direction:column;line-height:1}
+.brand-txt small{
+  font-family:'Inter',sans-serif;
+  font-size:.56rem;
+  font-weight:600;
+  letter-spacing:.26em;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-top:3px;
+}
+
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{
+  font-size:.9rem;
+  font-weight:500;
+  color:#bac5d6;
+  padding:9px 14px;
+  border-radius:10px;
+  transition:color .2s,background .2s;
+}
+.nav-links a:hover{color:var(--gold-lt);background:rgba(212,175,55,.08)}
+
+.burger{
+  display:none;
+  width:42px;height:42px;
+  border-radius:12px;
+  border:1px solid rgba(212,175,55,.18);
+  background:rgba(212,175,55,.05);
+  place-items:center;
+}
+.burger span{
+  display:block;position:relative;
+  width:18px;height:2px;border-radius:2px;
+  background:var(--gold);
+  transition:.25s var(--ease);
+}
+.burger span::before,.burger span::after{
+  content:'';position:absolute;left:0;
+  width:18px;height:2px;border-radius:2px;background:var(--gold);
+  transition:.25s var(--ease);
+}
+.burger span::before{top:-6px}
+.burger span::after{top:6px}
+.burger.active span{background:transparent}
+.burger.active span::before{top:0;transform:rotate(45deg)}
+.burger.active span::after{top:0;transform:rotate(-45deg)}
+
+.mmenu{
+  position:fixed;inset:0;z-index:99;
+  background:rgba(5,8,14,.98);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:4px;
+  opacity:0;visibility:hidden;
+  transition:opacity .25s,visibility .25s;
+}
+.mmenu.open{opacity:1;visibility:visible}
+.mmenu a{
+  font-family:'Outfit',sans-serif;
+  font-size:1.4rem;font-weight:700;
+  color:#cfd8e6;
+  padding:12px 28px;border-radius:12px;
+  transition:color .2s,background .2s;
+}
+.mmenu a:hover,.mmenu a:focus{color:var(--gold-lt);background:rgba(212,175,55,.08)}
+
+/* ============================================================
+   6. HERO
+   ============================================================ */
+.hero{
+  padding:clamp(130px,18vw,190px) 0 clamp(60px,8vw,90px);
+  text-align:center;
+  position:relative;
+}
+.hero h1{
+  font-size:clamp(2.1rem,6.4vw,4rem);
+  font-weight:900;
+  letter-spacing:-.04em;
+  margin-bottom:22px;
+}
+.hero p{
+  color:var(--muted);
+  font-size:clamp(1rem,2.2vw,1.12rem);
+  max-width:600px;
+  margin:0 auto 40px;
+}
+
+/* ============================================================
+   7. CONTACT CARDS
+   ============================================================ */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  max-width:820px;
+  margin-inline:auto;
+}
+
+.card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  padding:32px 28px 28px;
+  border-radius:var(--radius-lg);
+  background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  border:1px solid var(--border);
+  overflow:hidden;
+  transition:transform .35s var(--ease),border-color .3s;
+}
+.card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(37,211,102,.55),transparent);
+}
+.card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(37,211,102,.32);
+}
+
+.card-icon{
+  width:58px;height:58px;
+  display:grid;place-items:center;
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(37,211,102,.2),rgba(37,211,102,.04));
+  border:1px solid rgba(37,211,102,.3);
+  color:var(--wa);
+  margin-bottom:20px;
+}
+.card-icon svg{width:27px;height:27px}
+
+.card-label{
+  font-size:1rem;
+  font-weight:600;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.card-number{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(1.3rem,2.5vw,1.5rem);
+  font-weight:800;
+  letter-spacing:-.01em;
+  color:var(--text);
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.card-number::before{
+  content:'';
+  width:6px;height:6px;border-radius:50%;
+  background:var(--wa);
+  box-shadow:0 0 10px rgba(37,211,102,.9);
+  flex-shrink:0;
+}
+
+.card p{
+  color:var(--muted);
+  font-size:.92rem;
+  margin-bottom:22px;
+  flex:1;
+}
+
+.card-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  width:100%;
+  padding:14px 20px;
+  border-radius:13px;
+  font-family:'Outfit',sans-serif;
+  font-weight:700;
+  font-size:.95rem;
+  color:var(--wa);
+  background:rgba(37,211,102,.08);
+  border:1px solid rgba(37,211,102,.35);
+  transition:background .25s,color .25s,transform .25s var(--ease),border-color .25s;
+}
+.card-btn svg{width:17px;height:17px;flex-shrink:0}
+.card-btn:hover{
+  background:var(--wa);
+  color:#05070c;
+  border-color:var(--wa);
+  transform:translateY(-1px);
+}
+
+/* ============================================================
+   8. STEPS
+   ============================================================ */
+.steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  counter-reset:s;
+}
+
+.step{
+  padding:30px 24px;
+  border-radius:var(--radius);
+  background:var(--surface);
+  border:1px solid var(--border);
+  transition:transform .3s var(--ease),border-color .3s;
+  counter-increment:s;
+}
+.step:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.3)}
+.step::before{
+  content:'0' counter(s);
+  display:block;
+  font-family:'Outfit',sans-serif;
+  font-size:2.2rem;
+  font-weight:900;
+  line-height:1;
+  margin-bottom:14px;
+  background:linear-gradient(140deg,var(--gold-lt),var(--gold-dk));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.step h4{font-size:1.05rem;margin-bottom:8px}
+.step p{color:var(--muted);font-size:.88rem}
+
+/* ============================================================
+   9. SERVICES
+   ============================================================ */
+.services{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:16px;
+}
+
+.svc{
+  text-align:center;
+  padding:28px 18px;
+  border-radius:16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  transition:transform .3s var(--ease),border-color .3s,background .3s;
+}
+.svc:hover{
+  transform:translateY(-5px);
+  border-color:rgba(212,175,55,.32);
+  background:rgba(212,175,55,.06);
+}
+.svc-ico{
+  font-size:1.85rem;
+  line-height:1;
+  margin-bottom:12px;
+  display:inline-block;
+  transition:transform .3s var(--ease);
+}
+.svc:hover .svc-ico{transform:scale(1.12)}
+.svc h4{font-size:.98rem}
+.svc span{display:block;font-size:.76rem;color:var(--muted);margin-top:5px}
+
+/* ============================================================
+   10. BENEFITS
+   ============================================================ */
+.benefits{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:16px;
+}
+
+.benefit{
+  display:flex;
+  gap:14px;
+  padding:22px;
+  border-radius:16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  transition:transform .3s var(--ease),border-color .3s;
+}
+.benefit:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.28)}
+.benefit-ico{
+  width:44px;height:44px;
+  flex-shrink:0;
+  display:grid;place-items:center;
+  border-radius:12px;
+  font-size:1.15rem;
+  background:rgba(212,175,55,.09);
+  border:1px solid rgba(212,175,55,.22);
+}
+.benefit h4{font-size:.96rem;margin-bottom:5px}
+.benefit p{font-size:.85rem;color:var(--muted);line-height:1.55}
+
+/* ============================================================
+   11. CTA
+   ============================================================ */
+.cta{
+  position:relative;
+  text-align:center;
+  padding:clamp(48px,7vw,72px) clamp(24px,5vw,40px);
+  border-radius:30px;
+  background:
+    radial-gradient(600px 260px at 50% 0%,rgba(212,175,55,.14),transparent 70%),
+    linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  border:1px solid rgba(212,175,55,.22);
+}
+.cta h2{
+  font-size:clamp(1.6rem,4.2vw,2.4rem);
+  margin-bottom:14px;
+}
+.cta p{
+  color:var(--muted);
+  max-width:520px;
+  margin:0 auto 32px;
+  font-size:1rem;
+}
+.cta-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+}
+
+/* ============================================================
+   12. FOOTER
+   ============================================================ */
+footer{
+  border-top:1px solid var(--border);
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.4));
+  padding:56px 0 0;
+  margin-top:20px;
+}
+
+.foot-grid{
+  display:grid;
+  grid-template-columns:1.7fr 1fr 1fr;
+  gap:40px;
+  padding-bottom:40px;
+}
+.foot-brand p{
+  color:var(--muted);
+  font-size:.88rem;
+  max-width:340px;
+  margin-top:16px;
+}
+.foot-social{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+.foot-social a{
+  width:40px;height:40px;
+  display:grid;place-items:center;
+  border-radius:11px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  color:#b9c4d6;
+  transition:transform .25s var(--ease),color .25s,border-color .25s,background .25s;
+}
+.foot-social a svg{width:18px;height:18px}
+.foot-social a:hover{
+  transform:translateY(-3px);
+  color:var(--wa);
+  border-color:rgba(37,211,102,.45);
+  background:rgba(37,211,102,.08);
+}
+
+.foot-col h5{
+  font-family:'Outfit',sans-serif;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:16px;
+}
+.foot-col li{margin-bottom:10px}
+.foot-col a{
+  font-size:.88rem;
+  color:var(--muted);
+  transition:color .2s,padding-left .2s;
+}
+.foot-col a:hover{color:var(--gold-lt);padding-left:4px}
+
+.foot-bottom{
+  border-top:1px solid var(--border);
+  padding:22px 0 26px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+  justify-content:space-between;
+}
+.foot-bottom p{font-size:.8rem;color:var(--dim)}
+
+.badge-18{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  color:#ffb4b4;
+  background:rgba(255,80,80,.08);
+  border:1px solid rgba(255,80,80,.25);
+  padding:6px 12px;
+  border-radius:999px;
+}
+
+.resp{
+  font-size:.74rem;
+  color:var(--dim);
+  text-align:center;
+  padding-bottom:28px;
+  max-width:760px;
+  margin:0 auto;
+  line-height:1.7;
+}
+
+/* ============================================================
+   13. REVEAL ANIMATION
+   ============================================================ */
+.reveal{
+  opacity:0;
+  transform:translate3d(0,20px,0);
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+}
+.reveal.in{opacity:1;transform:none}
+
+/* ============================================================
+   14. RESPONSIVE
+   ============================================================ */
+@media (max-width:960px){
+  .nav-links{display:none}
+  .burger{display:grid}
+
+  .cards{grid-template-columns:1fr;max-width:520px}
+  .steps{grid-template-columns:1fr;max-width:520px;margin-inline:auto}
+
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .foot-brand{grid-column:1/-1}
+}
+
+@media (max-width:620px){
+  .cta-actions{flex-direction:column}
+  .cta-actions .btn{width:100%}
+
+  .foot-grid{grid-template-columns:1fr;gap:28px}
+  .foot-bottom{flex-direction:column;text-align:center;justify-content:center}
+
+  .card{padding:28px 22px 24px}
+}
+
+@media (max-width:380px){
+  .brand-txt small{display:none}
+  .brand{font-size:1rem}
+  .card-number{font-size:1.2rem}
+}
+
+/* ============================================================
+   15. ACCESIBILIDAD
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .reveal{opacity:1;transform:none}
+}
+
+a:focus-visible,button:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+
+    <a href="#top" class="brand" aria-label="Cargas del Casino — Inicio">
+      <span class="brand-mark" aria-hidden="true">💰</span>
+      <span class="brand-txt">
+        <strong>CARGAS</strong>
+        <small>del casino</small>
+      </span>
+    </a>
+
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#top">Inicio</a>
+      <a href="#contacto">Contacto</a>
+      <a href="#pasos">Cómo empezar</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#beneficios">Beneficios</a>
+    </nav>
+
+    <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mmenu">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mmenu" id="mmenu" role="dialog" aria-modal="true" aria-label="Menú">
+  <a href="#top">Inicio</a>
+  <a href="#contacto">Contacto</a>
+  <a href="#pasos">Cómo empezar</a>
+  <a href="#servicios">Servicios</a>
+  <a href="#beneficios">Beneficios</a>
+</div>
+
+<main id="top">
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <div class="container">
+
+      <h1 class="reveal">
+        Recargas y retiros,<br>
+        <span class="grad">rápido y sin vueltas</span>
+      </h1>
+
+      <p class="reveal">
+        Somos cajeros online. Te ayudamos a cargar tu cuenta, retirar tus ganancias
+        y resolver consultas por WhatsApp, todos los días.
+      </p>
+
+      <div class="reveal">
+        <a class="btn btn-ghost" href="#contacto">Ver los canales</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACTO
+       ============================================================ -->
+  <section class="section" id="contacto">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="eyebrow">Canales oficiales</span>
+        <h2>Escribinos por <span class="grad">WhatsApp</span></h2>
+        <p>Tenemos dos líneas activas. Escribí a la que quieras, te vamos a atender igual.</p>
+      </div>
+
+      <div class="cards">
+
+        <!-- WhatsApp 376 433 1086 -->
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </div>
+          <div class="card-label">Atención por WhatsApp</div>
+          <div class="card-number">+54 9 376 433 1086</div>
+          <p>Escribinos para cargas, retiros, consultas o cualquier duda que tengas.</p>
+          <a class="card-btn" href="https://wa.me/5493764331086?text=Hola!%20Quiero%20hacer%20una%20carga" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            Escribir por WhatsApp
+          </a>
+        </article>
+
+        <!-- WhatsApp 376 467 0949 -->
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </div>
+          <div class="card-label">Atención por WhatsApp</div>
+          <div class="card-number">+54 9 376 467 0949</div>
+          <p>Escribinos para cargas, retiros, consultas o cualquier duda que tengas.</p>
+          <a class="card-btn" href="https://wa.me/5493764670949?text=Hola!%20Quiero%20hacer%20una%20carga" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            Escribir por WhatsApp
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PASOS
+       ============================================================ -->
+  <section class="section" id="pasos">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="eyebrow">Proceso simple</span>
+        <h2>Hacé tu carga en <span class="grad">3 pasos</span></h2>
+        <p>Elegís una línea, nos escribís y listo.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal">
+          <h4>Elegí una línea</h4>
+          <p>Escribí a cualquiera de los dos WhatsApp disponibles.</p>
+        </div>
+        <div class="step reveal">
+          <h4>Indicá el monto</h4>
+          <p>Decinos cuánto querés cargar o retirar. Te pasamos los datos al instante.</p>
+        </div>
+        <div class="step reveal">
+          <h4>Listo, acreditado</h4>
+          <p>Confirmamos la operación y te avisamos por el mismo chat.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SERVICIOS
+       ============================================================ -->
+  <section class="section" id="servicios">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="eyebrow">Qué hacemos</span>
+        <h2>Nuestros <span class="grad">servicios</span></h2>
+        <p>Todo lo que necesitás para gestionar tu cuenta, en un solo lugar.</p>
+      </div>
+
+      <div class="services">
+        <div class="svc reveal"><span class="svc-ico" aria-hidden="true">💵</span><h4>Recargas</h4><span>Saldo al toque</span></div>
+        <div class="svc reveal"><span class="svc-ico" aria-hidden="true">🏦</span><h4>Retiros</h4><span>Cobrá tus ganancias</span></div>
+        <div class="svc reveal"><span class="svc-ico" aria-hidden="true">📲</span><h4>Transferencias</h4><span>Medios locales</span></div>
+        <div class="svc reveal"><span class="svc-ico" aria-hidden="true">🎁</span><h4>Promociones</h4><span>Bonos y beneficios</span></div>
+        <div class="svc reveal"><span class="svc-ico" aria-hidden="true">💬</span><h4>Consultas</h4><span>Te guiamos paso a paso</span></div>
+        <div class="svc reveal"><span class="svc-ico" aria-hidden="true">🔐</span><h4>Operaciones seguras</h4><span>Datos protegidos</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       BENEFICIOS
+       ============================================================ -->
+  <section class="section" id="beneficios">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="eyebrow">Por qué elegirnos</span>
+        <h2>Atención que <span class="grad">marca la diferencia</span></h2>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit reveal">
+          <div class="benefit-ico" aria-hidden="true">⚡</div>
+          <div>
+            <h4>Respuesta inmediata</h4>
+            <p>Atendemos al instante por WhatsApp. Sin esperas, sin bots.</p>
+          </div>
+        </div>
+        <div class="benefit reveal">
+          <div class="benefit-ico" aria-hidden="true">🕐</div>
+          <div>
+            <h4>Atención 24/7</h4>
+            <p>Disponibles todos los días, a cualquier hora.</p>
+          </div>
+        </div>
+        <div class="benefit reveal">
+          <div class="benefit-ico" aria-hidden="true">📱</div>
+          <div>
+            <h4>Dos líneas activas</h4>
+            <p>Siempre tenés una opción más para escribirnos.</p>
+          </div>
+        </div>
+        <div class="benefit reveal">
+          <div class="benefit-ico" aria-hidden="true">🤝</div>
+          <div>
+            <h4>Trato personalizado</h4>
+            <p>Te atendemos siempre con la misma persona de confianza.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CTA FINAL
+       ============================================================ -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="cta reveal">
+        <h2>¿Necesitás hacer una <span class="grad">carga</span>?</h2>
+        <p>Escribinos a cualquiera de nuestras dos líneas y te atendemos al instante.</p>
+        <div class="cta-actions">
+          <a class="btn btn-wa" href="https://wa.me/5493764331086?text=Hola!%20Quiero%20hacer%20una%20carga" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            +54 9 376 433 1086
+          </a>
+          <a class="btn btn-wa" href="https://wa.me/5493764670949?text=Hola!%20Quiero%20hacer%20una%20carga" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            +54 9 376 467 0949
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="container">
+
+    <div class="foot-grid">
+
+      <div class="foot-brand">
+        <a href="#top" class="brand">
+          <span class="brand-mark" aria-hidden="true">💰</span>
+          <span class="brand-txt">
+            <strong>CARGAS</strong>
+            <small>del casino</small>
+          </span>
+        </a>
+        <p>Servicio de cajeros online. Gestionamos tus cargas y retiros con atención personalizada.</p>
+
+        <div class="foot-social">
+          <a href="https://wa.me/5493764331086" target="_blank" rel="noopener" aria-label="WhatsApp +54 9 376 433 1086">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </a>
+          <a href="https://wa.me/5493764670949" target="_blank" rel="noopener" aria-label="WhatsApp +54 9 376 467 0949">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="foot-col">
+        <h5>Navegación</h5>
+        <ul>
+          <li><a href="#top">Inicio</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="#pasos">Cómo empezar</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#beneficios">Beneficios</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h5>Contacto</h5>
+        <ul>
+          <li><a href="https://wa.me/5493764331086" target="_blank" rel="noopener">+54 9 376 433 1086</a></li>
+          <li><a href="https://wa.me/5493764670949" target="_blank" rel="noopener">+54 9 376 467 0949</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="foot-bottom">
+      <p>© <span id="year"></span> Cargas del Casino. Todos los derechos reservados.</p>
+      <span class="badge-18">🔞 SOLO +18</span>
+    </div>
+
+    <p class="resp">
+      Solo para mayores de 18 años. Jugar puede causar adicción; jugá con responsabilidad
+      y verificá la legislación vigente en tu país.
+    </p>
+
+  </div>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  /* Nav scrolled state */
+  const nav = document.getElementById('nav');
+  let ticking = false;
+  const onScroll = () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        nav.classList.toggle('scrolled', window.scrollY > 30);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  /* Mobile menu */
+  const burger = document.getElementById('burger');
+  const menu   = document.getElementById('mmenu');
+
+  const toggle = (force) => {
+    const open = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+    menu.classList.toggle('open', open);
+    burger.classList.toggle('active', open);
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+
+  burger.addEventListener('click', () => toggle());
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+  document.addEventListener('keydown', e => e.key === 'Escape' && toggle(false));
+
+  /* Reveal on scroll */
+  const items = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (!entry.isIntersecting) return;
+        const delay = Math.min(i * 60, 240);
+        setTimeout(() => entry.target.classList.add('in'), delay);
+        io.unobserve(entry.target);
+      });
+    }, { threshold:.12, rootMargin:'0px 0px -40px' });
+    items.forEach(el => io.observe(el));
+  } else {
+    items.forEach(el => el.classList.add('in'));
+  }
+
+  /* Year */
+  const y = document.getElementById('year');
+  if (y) y.textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
