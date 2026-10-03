@@ -1,184 +1,178 @@
 (() => {
   'use strict';
 
-  /* ============================================================
-     HELPERS
-     ============================================================ */
-  const $  = (sel, ctx = document) => ctx.querySelector(sel);
-  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(hover: none)').matches;
+  const $  = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================================
-     AÑO DINÁMICO
+     AÑO
      ============================================================ */
   const yearEl = $('#year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   /* ============================================================
-     TOAST SYSTEM
+     TOASTS
      ============================================================ */
   const toastWrap = $('#toastWrap');
   const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
 
-  function showToast(message, { duration = 2200, icon = ICON_CHECK } = {}){
+  function toast(msg, duration = 2000){
     if (!toastWrap) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `${icon}<span>${message}</span>`;
-    toastWrap.appendChild(toast);
-
-    const remove = () => {
-      if (!toast.isConnected) return;
-      toast.classList.add('out');
-      toast.addEventListener('animationend', () => toast.remove(), { once: true });
-      setTimeout(() => toast.remove(), 400);
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = `${ICON_CHECK}<span>${msg}</span>`;
+    toastWrap.appendChild(el);
+    const kill = () => {
+      if (!el.isConnected) return;
+      el.classList.add('out');
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+      setTimeout(() => el.remove(), 300);
     };
-
-    const timer = setTimeout(remove, duration);
-    toast.addEventListener('click', () => {
-      clearTimeout(timer);
-      remove();
-    });
+    const t = setTimeout(kill, duration);
+    el.addEventListener('click', () => { clearTimeout(t); kill(); });
   }
 
   /* ============================================================
-     COPIAR NÚMEROS AL PORTAPAPELES
+     COPIAR NÚMEROS
      ============================================================ */
-  async function copyToClipboard(text){
+  const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+  async function copyText(text){
     if (navigator.clipboard && window.isSecureContext){
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch (_) { /* fallback */ }
+      try { await navigator.clipboard.writeText(text); return true; } catch(_){}
     }
     try {
       const ta = document.createElement('textarea');
       ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed';
-      ta.style.top = '-9999px';
-      ta.style.opacity = '0';
+      ta.setAttribute('readonly','');
+      ta.style.cssText = 'position:fixed;top:-9999px;opacity:0';
       document.body.appendChild(ta);
       ta.select();
       const ok = document.execCommand('copy');
       ta.remove();
       return ok;
-    } catch (_) {
-      return false;
-    }
+    } catch(_){ return false; }
   }
 
   $$('.copy-btn').forEach(btn => {
+    let timer = null;
     btn.addEventListener('click', async () => {
-      const value = btn.getAttribute('data-copy');
-      if (!value) return;
-
-      const ok = await copyToClipboard(value);
-
+      const val = btn.dataset.copy;
+      if (!val) return;
+      const ok = await copyText(val);
       if (ok){
+        clearTimeout(timer);
         btn.classList.add('copied');
-        showToast('Número copiado');
-
-        const original = btn.innerHTML;
         btn.innerHTML = ICON_CHECK;
-        setTimeout(() => {
+        toast('Número copiado');
+        timer = setTimeout(() => {
           btn.classList.remove('copied');
-          btn.innerHTML = original;
-        }, 1400);
+          btn.innerHTML = ICON_COPY;
+        }, 1500);
       } else {
-        showToast('No se pudo copiar');
+        toast('No se pudo copiar');
       }
     });
   });
 
   /* ============================================================
-     NAV — SCROLLED + BOTÓN VOLVER ARRIBA
+     NAV + BACK TO TOP
      ============================================================ */
   const nav = $('#nav');
-  const backTop = $('#backTop');
+  const top = $('#top');
   let ticking = false;
 
-  const onScroll = () => {
+  function onScroll(){
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      const y = window.scrollY;
-      if (nav) nav.classList.toggle('scrolled', y > 30);
-      if (backTop) backTop.classList.toggle('show', y > window.innerHeight * 0.6);
-      updateActiveLink();
-      ticking = false;
+      try {
+        const y = window.scrollY;
+        if (nav) nav.classList.toggle('scrolled', y > 20);
+        if (top) top.classList.toggle('show', y > window.innerHeight * 0.7);
+      } finally { ticking = false; }
     });
-  };
+  }
   window.addEventListener('scroll', onScroll, { passive: true });
 
+  if (top){
+    top.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  }
+
   /* ============================================================
-     NAV — LINK ACTIVO SEGÚN SECCIÓN VISIBLE
+     NAV ACTIVE LINK
      ============================================================ */
   const navLinks = $$('.nav-links a[href^="#"]');
-  const sections = navLinks
-    .map(a => $(a.getAttribute('href')))
-    .filter(Boolean);
+  const navSections = navLinks.map(a => $(a.getAttribute('href'))).filter(Boolean);
 
-  function updateActiveLink(){
-    if (!sections.length) return;
-    const y = window.scrollY + 130;
-    let active = sections[0];
-    for (const s of sections){
-      if (s.offsetTop <= y) active = s;
-    }
-    navLinks.forEach(a => {
-      const isActive = a.getAttribute('href') === '#' + active.id;
-      a.classList.toggle('active', isActive);
+  if ('IntersectionObserver' in window && navSections.length){
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = '#' + e.target.id;
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+      });
+    }, {
+      rootMargin: '-84px 0px -60% 0px',
+      threshold: 0
     });
+    navSections.forEach(s => spy.observe(s));
   }
 
   /* ============================================================
-     BOTÓN VOLVER ARRIBA
+     MOBILE BAR — hide when contact visible
      ============================================================ */
-  if (backTop){
-    backTop.addEventListener('click', () => {
-      const behavior = prefersReducedMotion ? 'auto' : 'smooth';
-      window.scrollTo({ top: 0, behavior });
-    });
+  const mbar = $('#mbar');
+  const contactSec = $('#contacto');
+  if (mbar && contactSec && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => mbar.classList.toggle('hidden', e.isIntersecting));
+    }, { threshold: 0.12 });
+    io.observe(contactSec);
   }
 
   /* ============================================================
-     MENÚ MÓVIL (focus trap + bloqueo de scroll + scroll al ancla)
+     MOBILE MENU
      ============================================================ */
   const burger = $('#burger');
   const menu = $('#mmenu');
-  const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
-  let bodyScrollY = 0;
-  let bodyIsLocked = false;
+  const FOCUSABLE = 'a[href], button:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
+  let scrollY = 0;
+  let locked = false;
 
-  const lockBody = () => {
-    if (bodyIsLocked) return;
-    bodyScrollY = window.scrollY;
+  function lock(){
+    if (locked) return;
+    scrollY = window.scrollY;
     document.body.style.position = 'fixed';
-    document.body.style.top = `-${bodyScrollY}px`;
+    document.body.style.top = `-${scrollY}px`;
     document.body.style.left = '0';
     document.body.style.right = '0';
     document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
-    bodyIsLocked = true;
-  };
+    locked = true;
+  }
 
-  const unlockBody = () => {
-    if (!bodyIsLocked) return;
+  function unlock(){
+    if (!locked) return;
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.left = '';
     document.body.style.right = '';
     document.body.style.width = '';
     document.body.style.overflow = '';
-    window.scrollTo(0, bodyScrollY);
-    bodyIsLocked = false;
-  };
+    window.scrollTo(0, scrollY);
+    html.style.scrollBehavior = prev;
+    locked = false;
+  }
 
-  const setMenu = (open) => {
+  function setMenu(open){
     if (!menu || !burger) return;
-
     menu.classList.toggle('open', open);
     burger.classList.toggle('active', open);
     burger.setAttribute('aria-expanded', String(open));
@@ -186,148 +180,243 @@
     menu.setAttribute('aria-hidden', String(!open));
 
     if (open){
-      lockBody();
-      const firstLink = menu.querySelector('a');
-      if (firstLink) setTimeout(() => firstLink.focus({ preventScroll: true }), 60);
+      lock();
+      if (mbar) mbar.classList.add('hidden');
+      const first = menu.querySelector('a');
+      if (first) setTimeout(() => first.focus({ preventScroll: true }), 60);
     } else {
-      unlockBody();
+      unlock();
+      if (mbar && contactSec){
+        const r = contactSec.getBoundingClientRect();
+        const visible = r.top < window.innerHeight && r.bottom > 0;
+        mbar.classList.toggle('hidden', visible);
+      }
     }
-  };
+  }
 
   if (burger && menu){
-    burger.addEventListener('click', () => {
-      setMenu(!menu.classList.contains('open'));
-    });
+    burger.addEventListener('click', () => setMenu(!menu.classList.contains('open')));
 
-    // Links del menú: cierra el menú y navega al ancla correctamente
     menu.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', (e) => {
         const href = a.getAttribute('href');
         if (!href || href === '#') return;
         const target = $(href);
         if (!target) return;
-
         e.preventDefault();
-
-        // Guardar el destino para scrollear tras cerrar
         setMenu(false);
-
-        // Esperamos dos rAF para asegurar que el layout se restauró
-        // y luego hacemos scroll al destino con el offset correcto
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            const offset = (nav?.offsetHeight || 72) + 16;
+            const offset = (nav?.offsetHeight || 64) + 14;
             const top = target.getBoundingClientRect().top + window.scrollY - offset;
-            const behavior = prefersReducedMotion ? 'auto' : 'smooth';
-            window.scrollTo({ top, behavior });
-
-            // Devolver el foco al burger tras navegar (útil con teclado)
-            if (!prefersReducedMotion){
-              setTimeout(() => burger.focus({ preventScroll: true }), 500);
-            }
+            window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
           });
         });
       });
     });
 
-    // Cerrar al tocar el backdrop (fuera del contenido)
-    menu.addEventListener('click', (e) => {
-      if (e.target === menu) setMenu(false);
-    });
+    menu.addEventListener('click', (e) => { if (e.target === menu) setMenu(false); });
 
-    // Escape + focus trap
     document.addEventListener('keydown', (e) => {
       if (!menu.classList.contains('open')) return;
-
       if (e.key === 'Escape'){
         e.preventDefault();
         setMenu(false);
         burger.focus({ preventScroll: true });
         return;
       }
-
       if (e.key === 'Tab'){
-        const focusables = Array.from(menu.querySelectorAll(FOCUSABLE))
-          .filter(el => el.offsetParent !== null);
-        if (!focusables.length) return;
-
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        const active = document.activeElement;
-
+        const f = Array.from(menu.querySelectorAll(FOCUSABLE)).filter(el => el.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1], act = document.activeElement;
         if (e.shiftKey){
-          if (active === first || !menu.contains(active)){
-            e.preventDefault();
-            last.focus();
-          }
+          if (act === first || !menu.contains(act)){ e.preventDefault(); last.focus(); }
         } else {
-          if (active === last || !menu.contains(active)){
-            e.preventDefault();
-            first.focus();
-          }
+          if (act === last || !menu.contains(act)){ e.preventDefault(); first.focus(); }
         }
       }
     });
 
-    // Cerrar al agrandar ventana (vuelve a desktop)
-    let resizeTO;
+    let rTO;
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTO);
-      resizeTO = setTimeout(() => {
+      clearTimeout(rTO);
+      rTO = setTimeout(() => {
         if (window.innerWidth > 900 && menu.classList.contains('open')) setMenu(false);
       }, 150);
     }, { passive: true });
 
-    // Si el usuario vuelve a la pestaña, asegurarse de que el body no quede bloqueado
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && menu.classList.contains('open')){
-        setMenu(false);
-      }
+      if (document.hidden && menu.classList.contains('open')) setMenu(false);
     });
   }
 
   /* ============================================================
-     REVEAL ON SCROLL
+     COUNTDOWN
+     ============================================================ */
+  // Sorteo: domingo 8 de noviembre de 2026, 22:00 hs (UTC-3)
+  const TARGET = new Date('2026-11-08T22:00:00-03:00').getTime();
+
+  const cd = {
+    d: $$('[data-cd="d"]'),
+    h: $$('[data-cd="h"]'),
+    m: $$('[data-cd="m"]'),
+    s: $$('[data-cd="s"]'),
+    full: $$('[data-cd-full]')
+  };
+  const pad = (n) => String(n).padStart(2, '0');
+
+  function tick(){
+    const diff = TARGET - Date.now();
+
+    if (diff <= 0){
+      cd.d.forEach(e => e.textContent = '00');
+      cd.h.forEach(e => e.textContent = '00');
+      cd.m.forEach(e => e.textContent = '00');
+      cd.s.forEach(e => e.textContent = '00');
+      cd.full.forEach(e => e.textContent = 'Es hoy');
+      return;
+    }
+
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    cd.d.forEach(e => e.textContent = pad(d));
+    cd.h.forEach(e => e.textContent = pad(h));
+    cd.m.forEach(e => e.textContent = pad(m));
+    cd.s.forEach(e => e.textContent = pad(s));
+
+    const txt = d > 0
+      ? `${d} d ${pad(h)} h ${pad(m)} min`
+      : `${pad(h)} h ${pad(m)} min ${pad(s)} s`;
+    cd.full.forEach(e => e.textContent = txt);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  /* ============================================================
+     MODAL SORTEO
+     ============================================================ */
+  const modal = $('#modal');
+  const MODAL_KEY = 'sorteo_8nov_visto';
+  let lastFocused = null;
+
+  function openModal(){
+    if (!modal) return;
+    lastFocused = document.activeElement;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+
+    const y = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${y}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    document.body.dataset.scrollY = String(y);
+
+    setTimeout(() => {
+      const cta = modal.querySelector('.modal-cta');
+      if (cta) cta.focus({ preventScroll: true });
+    }, 80);
+  }
+
+  function closeModal(){
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    try { sessionStorage.setItem(MODAL_KEY, '1'); } catch(_){}
+
+    const y = parseInt(document.body.dataset.scrollY || '0', 10);
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    delete document.body.dataset.scrollY;
+    window.scrollTo(0, y);
+    html.style.scrollBehavior = prev;
+
+    if (lastFocused && typeof lastFocused.focus === 'function'){
+      lastFocused.focus({ preventScroll: true });
+    }
+  }
+
+  if (modal){
+    $$('[data-close-modal]', modal).forEach(el => el.addEventListener('click', closeModal));
+
+    document.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape'){ e.preventDefault(); closeModal(); return; }
+      if (e.key === 'Tab'){
+        const f = Array.from(modal.querySelectorAll(FOCUSABLE))
+          .filter(el => el.offsetParent !== null && !el.hasAttribute('disabled'));
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1], act = document.activeElement;
+        if (e.shiftKey){
+          if (act === first || !modal.contains(act)){ e.preventDefault(); last.focus(); }
+        } else {
+          if (act === last || !modal.contains(act)){ e.preventDefault(); first.focus(); }
+        }
+      }
+    });
+
+    let shown = false;
+    try { shown = sessionStorage.getItem(MODAL_KEY) === '1'; } catch(_){}
+    if (!shown){
+      setTimeout(() => {
+        if (menu && menu.classList.contains('open')) return;
+        openModal();
+      }, 1400);
+    }
+
+    if (window.location.hash === '#sorteo'){
+      try { sessionStorage.setItem(MODAL_KEY, '1'); } catch(_){}
+    }
+  }
+
+  /* ============================================================
+     REVEAL
      ============================================================ */
   const revealEls = $$('.reveal');
-
   if ('IntersectionObserver' in window && revealEls.length){
     const io = new IntersectionObserver((entries, obs) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('in');
-        obs.unobserve(entry.target);
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
       });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -8% 0px'
-    });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
     revealEls.forEach(el => io.observe(el));
   } else {
     revealEls.forEach(el => el.classList.add('in'));
   }
 
   /* ============================================================
-     SCROLL SUAVE CON FALLBACK (navegadores viejos)
+     SMOOTH SCROLL FALLBACK
      ============================================================ */
   if (!('scrollBehavior' in document.documentElement.style)){
     $$('a[href^="#"]').forEach(a => {
       a.addEventListener('click', (e) => {
         const id = a.getAttribute('href');
         if (!id || id === '#') return;
-        const target = $(id);
-        if (!target) return;
+        const t = $(id);
+        if (!t) return;
         e.preventDefault();
-        const offset = (nav?.offsetHeight || 72) + 16;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        const offset = (nav?.offsetHeight || 64) + 14;
+        const top = t.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo(0, top);
       });
     });
   }
 
-  /* ============================================================
-     SCROLL INICIAL
-     ============================================================ */
   onScroll();
 
 })();
