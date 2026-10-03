@@ -123,18 +123,6 @@
   }
 
   /* ============================================================
-     MOBILE BAR — hide when contact visible
-     ============================================================ */
-  const mbar = $('#mbar');
-  const contactSec = $('#contacto');
-  if (mbar && contactSec && 'IntersectionObserver' in window){
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => mbar.classList.toggle('hidden', e.isIntersecting));
-    }, { threshold: 0.12 });
-    io.observe(contactSec);
-  }
-
-  /* ============================================================
      MOBILE MENU
      ============================================================ */
   const burger = $('#burger');
@@ -181,16 +169,10 @@
 
     if (open){
       lock();
-      if (mbar) mbar.classList.add('hidden');
       const first = menu.querySelector('a');
       if (first) setTimeout(() => first.focus({ preventScroll: true }), 60);
     } else {
       unlock();
-      if (mbar && contactSec){
-        const r = contactSec.getBoundingClientRect();
-        const visible = r.top < window.innerHeight && r.bottom > 0;
-        mbar.classList.toggle('hidden', visible);
-      }
     }
   }
 

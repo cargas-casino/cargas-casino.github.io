@@ -32,7 +32,6 @@
   --safe-r:env(safe-area-inset-right, 0px);
   --safe-b:env(safe-area-inset-bottom, 0px);
   --safe-l:env(safe-area-inset-left, 0px);
-  --mbar-h:0px;
 }
 
 /* ============================================================
@@ -60,7 +59,6 @@ body{
   text-rendering:optimizeLegibility;
   min-height:100vh;
   min-height:100dvh;
-  padding-bottom:var(--mbar-h);
 }
 
 img,svg,video,canvas{display:block;max-width:100%;height:auto}
@@ -968,51 +966,7 @@ p{text-wrap:pretty}
 }
 
 /* ============================================================
-   15. MOBILE BAR
-   ============================================================ */
-.mbar{
-  position:fixed;left:0;right:0;bottom:0;z-index:180;
-  display:none;gap:8px;
-  padding:10px max(12px,var(--safe-r)) calc(10px + var(--safe-b)) max(12px,var(--safe-l));
-  background:rgba(14,16,20,.96);
-  border-top:1px solid var(--line);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  transform:translateY(0);
-  transition:transform .25s var(--ease),opacity .25s var(--ease);
-}
-.mbar.hidden{transform:translateY(110%);opacity:0;pointer-events:none}
-
-.mbar-btn{
-  flex:1;min-width:0;
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  min-height:52px;padding:8px 12px;
-  border-radius:12px;
-  color:var(--text);
-  background:var(--surface);
-  border:1px solid var(--line);
-  transition:background .15s,border-color .15s,transform .15s;
-  -webkit-tap-highlight-color:transparent;
-}
-.mbar-btn svg{width:18px;height:18px;color:var(--wa);flex-shrink:0}
-.mbar-btn:active{transform:scale(.97)}
-.mbar-txt{
-  display:flex;flex-direction:column;line-height:1.05;
-  min-width:0;text-align:left;
-}
-.mbar-txt small{
-  font-size:9.5px;font-weight:600;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--text-3);
-}
-.mbar-txt strong{
-  font-size:13px;font-weight:700;
-  letter-spacing:-.01em;color:var(--text);
-  white-space:nowrap;
-  font-variant-numeric:tabular-nums;
-}
-
-/* ============================================================
-   16. BACK TO TOP
+   15. BACK TO TOP
    ============================================================ */
 .top{
   position:fixed;
@@ -1038,18 +992,17 @@ p{text-wrap:pretty}
 .top:active{transform:scale(.94)}
 
 /* ============================================================
-   17. TOAST
+   16. TOAST
    ============================================================ */
 .toast-wrap{
   position:fixed;left:50%;
-  bottom:calc(24px + var(--mbar-h));
+  bottom:calc(24px + var(--safe-b));
   transform:translateX(-50%);
   z-index:300;
   display:flex;flex-direction:column;align-items:center;gap:8px;
   pointer-events:none;
   max-width:calc(100vw - 32px);
   padding-inline:16px;
-  transition:bottom .25s var(--ease);
 }
 .toast{
   display:inline-flex;align-items:center;gap:9px;
@@ -1071,7 +1024,7 @@ p{text-wrap:pretty}
 @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-6px) scale(.97)}}
 
 /* ============================================================
-   18. REVEAL
+   17. REVEAL
    ============================================================ */
 .reveal{opacity:1;transform:none}
 .js .reveal{
@@ -1082,7 +1035,7 @@ p{text-wrap:pretty}
 .js .reveal.in{opacity:1;transform:none}
 
 /* ============================================================
-   19. RESPONSIVE
+   18. RESPONSIVE
    ============================================================ */
 
 @media (max-width:960px){
@@ -1100,18 +1053,6 @@ p{text-wrap:pretty}
 }
 
 @media (max-width:768px){
-  :root{--mbar-h:78px}
-
-  .mbar{display:flex}
-
-  .top{
-    bottom:calc(var(--mbar-h) + var(--safe-b) + 12px);
-    right:max(12px, var(--safe-r));
-  }
-  .toast-wrap{
-    bottom:calc(var(--mbar-h) + var(--safe-b) + 16px);
-  }
-
   .hero{padding:calc(110px + var(--safe-t)) 0 60px}
   .hero-lede{font-size:16px}
   .hero-actions{flex-direction:column;align-items:stretch}
@@ -1161,11 +1102,6 @@ p{text-wrap:pretty}
   .hero-badge{font-size:12px;padding:6px 12px}
   .hero h1{font-size:1.9rem}
 
-  .mbar-txt strong{font-size:12px}
-  .mbar-txt small{font-size:9px}
-  .mbar-btn svg{width:17px;height:17px}
-  .mbar-btn{gap:7px;padding:8px 10px}
-
   .prize-num{font-size:1.5rem}
   .mprize-v{font-size:1rem}
   .mcd strong{font-size:15px}
@@ -1173,9 +1109,6 @@ p{text-wrap:pretty}
 
 @media (max-height:500px) and (orientation:landscape){
   .hero{padding-top:100px}
-  .mbar{display:none}
-  :root{--mbar-h:0px}
-  .top{bottom:max(12px, var(--safe-b))}
   .mmenu{padding-top:calc(70px + var(--safe-t));padding-bottom:calc(20px + var(--safe-b))}
   .mmenu-inner{gap:14px}
   .mmenu-promo{padding:12px 14px}
@@ -1196,7 +1129,7 @@ p{text-wrap:pretty}
 }
 
 /* ============================================================
-   20. ACCESSIBILITY
+   19. ACCESSIBILITY
    ============================================================ */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
@@ -1211,8 +1144,6 @@ p{text-wrap:pretty}
   .modal.open .modal-card{transform:none}
   .faq-body{animation:none}
   .toast{animation:none !important}
-  .mbar{transition:none}
-  .mbar.hidden{opacity:0;visibility:hidden;transform:none}
 }
 
 @media (prefers-contrast:more){
@@ -1233,7 +1164,7 @@ summary:focus-visible{
 }
 
 @media print{
-  .nav,.mmenu,.burger,.mbar,.top,.modal,.toast-wrap,.hero-actions,.hero-badge,.copy-btn{display:none !important}
+  .nav,.mmenu,.burger,.top,.modal,.toast-wrap,.hero-actions,.hero-badge,.copy-btn{display:none !important}
   body{background:#fff;color:#000;padding:0}
   .hl{color:#000}
 }
