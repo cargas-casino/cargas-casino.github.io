@@ -190,18 +190,6 @@ p{text-wrap:pretty}
 }
 .nav-links a:hover{color:var(--text);background:var(--surface)}
 
-.nav-wa{
-  display:inline-flex;align-items:center;gap:7px;
-  font-weight:600;font-size:14px;
-  color:#0e1014;background:var(--wa);
-  padding:9px 16px;border-radius:999px;
-  transition:background .15s,transform .15s;
-  -webkit-tap-highlight-color:transparent;
-}
-.nav-wa svg{width:15px;height:15px;flex-shrink:0}
-.nav-wa:hover{background:var(--wa-dark)}
-.nav-wa:active{transform:scale(.97)}
-
 .burger{
   display:none;
   width:44px;height:44px;border-radius:10px;
@@ -1108,9 +1096,6 @@ p{text-wrap:pretty}
 
 @media (max-width:900px){
   .nav-links{display:none}
-  .nav-wa span{display:none}
-  .nav-wa{padding:10px;border-radius:50%}
-  .nav-wa svg{width:17px;height:17px}
   .burger{display:grid}
 }
 
@@ -1204,8 +1189,7 @@ p{text-wrap:pretty}
   .btn-primary:hover,
   .btn-quiet:hover,
   .contact-btn:hover,
-  .prize:hover,
-  .nav-wa:hover{transform:none}
+  .prize:hover{transform:none}
   .prize:hover{border-color:var(--line)}
   .contact-btn:hover{background:var(--surface-2);color:var(--text);border-color:var(--line)}
   .contact-btn:hover svg{transform:none}
